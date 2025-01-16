@@ -1,0 +1,124 @@
+from rest_framework.views import APIView
+from restaurantsystem.utils.api_response import ApiSuccessResponse, ApiErrorResponse
+from rest_framework.permissions import AllowAny, IsAuthenticated 
+from rest_framework.response import Response
+from rest_framework import status 
+from orders.services.order_service import OrderService
+from restaurantsystem.utils.paginator import Paginator
+from orders.serializers.order_serializers import OrderGetSerializer
+
+class OrderSaveController(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        
+    def post(self, request):
+        success, result = self.order_service.save(request.data, request.user)
+        if success:
+            api_response = ApiSuccessResponse(201, result, "Orden creada correctamente")
+            return Response(api_response.get_response(), status=status.HTTP_201_CREATED)
+        else:
+            api_response = ApiErrorResponse(400, result, "An error ocurred")
+            return Response(api_response.get_response(), status=status.HTTP_400_BAD_REQUEST)
+        
+        
+class OrderGetController(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        
+    def get(self, request, pk):
+        order_found = self.order_service.get_order_by_id(pk)
+        api_response = ApiSuccessResponse(200, order_found, "Order found successfully")
+        return Response(api_response.get_response(), status=status.HTTP_200_OK)
+    
+
+class OrderListController(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None, paginator=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        self.paginator = paginator or Paginator()
+        
+    def get(self, request):
+        try:
+            self.paginator.validate_query_param(request)
+            orders = self.order_service.get_restaurant_orders(request.user)
+            paginated_orders = self.paginator.paginate_query_set(orders, request)
+            
+            serialized_orders = OrderGetSerializer(paginated_orders, many=True)
+            
+            paginator_object = self.paginator.get_paginator_object()
+            
+            return paginator_object.get_paginated_response(serialized_orders.data)
+        except (ValueError, TypeError):
+            error = {"error": "El parámetro 'page_size' debe ser un número válido"}   
+            api_response = ApiErrorResponse(400, message=error)
+            return Response(
+                api_response.get_response(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+class OrderListAssignedDealerController(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None, paginator=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        self.paginator = paginator or Paginator()
+        
+    def get(self, request):
+        try:
+            self.paginator.validate_query_param(request)
+            orders = self.order_service.get_user_orders(request.user, True)
+            
+            paginated_orders = self.paginator.paginate_query_set(orders, request)
+            
+            serialized_orders = OrderGetSerializer(paginated_orders, many=True)
+            
+            paginator_object = self.paginator.get_paginator_object()
+            
+            return paginator_object.get_paginated_response(serialized_orders.data)
+        except (ValueError, TypeError):
+            error = {"error": "El parámetro 'page_size' debe ser un número válido"}   
+            api_response = ApiErrorResponse(400, message=error)
+            return Response(
+                api_response.get_response(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+class OrderListCustomerOrders(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None, paginator=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        self.paginator = paginator or Paginator()
+        
+    def get(self, request):
+        try:
+            self.paginator.validate_query_param(request)
+            orders = self.order_service.get_user_orders(request.user, False)
+            
+            paginated_orders = self.paginator.paginate_query_set(orders, request)
+            
+            serialized_orders = OrderGetSerializer(paginated_orders, many=True)
+            
+            paginator_object = self.paginator.get_paginator_object()
+            
+            return paginator_object.get_paginated_response(serialized_orders.data)
+        except (ValueError, TypeError):
+            error = {"error": "El parámetro 'page_size' debe ser un número válido"}   
+            api_response = ApiErrorResponse(400, message=error)
+            return Response(
+                api_response.get_response(),
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+        
