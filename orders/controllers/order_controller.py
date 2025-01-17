@@ -120,5 +120,19 @@ class OrderListCustomerOrders(APIView):
                 api_response.get_response(),
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+class OrderAssignController(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, order_service=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        
+    def patch(self, request, pk):
+        result = self.order_service.assign_order(request.data, pk)
+        
+        if result:
+            api_response = ApiSuccessResponse(200, None, "Order assigned successfully")
+            return Response(api_response.get_response(), status=status.HTTP_200_OK)
     
         

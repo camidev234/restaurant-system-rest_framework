@@ -79,7 +79,6 @@ class OrderAssignSerializer(serializers.ModelSerializer):
         queryset=User.objects.filter(typology_id=3),
         source="dealer",
         required=True,
-        read_only=True
     )
     
     class Meta:

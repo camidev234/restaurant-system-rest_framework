@@ -1,10 +1,11 @@
-from orders.serializers.order_serializers import OrderSaveSerializer, OrderInvalidSerializer, OrderSerializer, OrderGetSerializer
+from orders.serializers.order_serializers import OrderSaveSerializer, OrderInvalidSerializer, OrderAssignSerializer, OrderSerializer, OrderGetSerializer
 from rest_framework.exceptions import ValidationError, NotFound, PermissionDenied
 from menu.models.menu_item import MenuItem
 from orders.serializers.order_item_serializers import OrderItemGetSerializer
 from django.db import transaction
 from orders.models.order_item import OrderItem
 from orders.models.order import Order
+from users.models.users import User
 
 class OrderService:
     def save(self, data, user_auth):
@@ -136,6 +137,28 @@ class OrderService:
         
         return orders
     
-    def assign_order(self, dealer_to_assign):
-        pass
+    def assign_order(self, data, order_id):
+        
+        serializer = OrderAssignSerializer(data=data)
+        
+        if serializer.is_valid():
+            order = self.__get_order_instance(order_id)
+            dealer = User.objects.get(id=data["dealer_id"])
+            
+            if dealer.restaurant != order.restaurant:
+                raise PermissionDenied("the delivery person must belong to the same restaurant as the order")
+            
+            order.dealer = dealer
+            order.save()
+            
+            return True
+        
+        raise ValidationError(serializer.errors)
+        
+        
+        
+        
+        
+        
+        
         
