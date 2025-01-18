@@ -6,8 +6,14 @@ from django.db import transaction
 from orders.models.order_item import OrderItem
 from orders.models.order import Order
 from users.models.users import User
+from orders.socket_services.order_web_socket_service import OrderWebSocketService
+from asgiref.sync import async_to_sync
 
 class OrderService:
+    
+    def __init__(self, order_socket_service=None):
+        self.order_socket_service = order_socket_service or OrderWebSocketService()
+
     def save(self, data, user_auth):
         serializer = OrderSaveSerializer(data=data)
         if serializer.is_valid():
@@ -138,18 +144,21 @@ class OrderService:
         return orders
     
     def assign_order(self, data, order_id):
-        
         serializer = OrderAssignSerializer(data=data)
         
         if serializer.is_valid():
             order = self.__get_order_instance(order_id)
             dealer = User.objects.get(id=data["dealer_id"])
-            
+
             if dealer.restaurant != order.restaurant:
-                raise PermissionDenied("the delivery person must belong to the same restaurant as the order")
-            
+                raise PermissionDenied("The delivery person must belong to the same restaurant as the order")
+
             order.dealer = dealer
+            order.status_id = 2  
             order.save()
+
+            # función asíncrona de WebSocket de manera síncrona
+            async_to_sync(self.order_socket_service.send_order_update)(order.id, order.status.id)
             
             return True
         

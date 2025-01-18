@@ -45,7 +45,20 @@ INSTALLED_APPS = [
     'orders',
     'restaurants',
     'rest_framework_simplejwt',
+    'channels'
 ]
+
+ASGI_APPLICATION = 'restaurantsystem.asgi.application'
+
+# sin redis
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("127.0.0.1", 6379)], 
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
