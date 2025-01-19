@@ -10,10 +10,10 @@ class OrderWebSocketService:
         
         channel_layer = get_channel_layer()
         
-        print(f"Channel Layer: {channel_layer}")
+        # print(f"Channel Layer: {channel_layer}")
         
         group_name = f"group_order_{order_id}"
-        print(f"Sending message to group: {group_name}")
+        # print(f"Sending message to group: {group_name}")
 
 
         await channel_layer.group_send(

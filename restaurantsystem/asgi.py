@@ -8,21 +8,23 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 """
 
 import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'restaurantsystem.settings')
+
 from django.core.asgi import get_asgi_application
+django_asgi_app = get_asgi_application()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from orders.consumers.order_consumer import OrderConsumer
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'restaurantsystem.settings')
+from restaurantsystem.middleware.JwtAuthSocketMiddleware import JWTAuthMiddleware
+from orders.routing import websocket_urlpatterns as orders_routing_urls
 
 application = ProtocolTypeRouter({
-    "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
+    "http": django_asgi_app,
+    "websocket": JWTAuthMiddleware(
         URLRouter(
-            [
-                path("ws/orders/<int:order_id>/", OrderConsumer.as_asgi()),  # Definir la ruta de websocket
-            ]
+            orders_routing_urls 
         )
     ),
 })

@@ -11,20 +11,20 @@ class CheckPermissionMiddleware:
 
     def __call__(self, request):
         
-        if request.scheme == 'ws' or request.path.startswith('/ws/'):
-            # Si es WebSocket, saltamos la validación de permisos
-            # response = self.get_response(request)
-            # if response.get('Content-Type', '').startswith('text/html'):
-            #     html_content = response.content.decode('utf-8')  # Decodificar bytes a texto
-            #     print("Contenido HTML recibido:")
-            #     print(html_content) 
-            # scheme = request.scheme 
-            # host = request.get_host() 
-            # full_url = f"{scheme}://{host}{request.path}"  # Combinar la URL completa
+        # if request.scheme == 'ws' or request.path.startswith('/ws/'):
+        #     # Si es WebSocket, saltamos la validación de permisos
+        #     # response = self.get_response(request)
+        #     # if response.get('Content-Type', '').startswith('text/html'):
+        #     #     html_content = response.content.decode('utf-8')  # Decodificar bytes a texto
+        #     #     print("Contenido HTML recibido:")
+        #     #     print(html_content) 
+        #     # scheme = request.scheme 
+        #     # host = request.get_host() 
+        #     # full_url = f"{scheme}://{host}{request.path}"  # Combinar la URL completa
 
-            # # Hacer el print de la URL completa
-            # print(f"Full WebSocket URL: {full_url}")
-            return self.get_response(request)
+        #     # # Hacer el print de la URL completa
+        #     # print(f"Full WebSocket URL: {full_url}")
+        #     return self.get_response(request)
         
         actual_url = request.path
         
