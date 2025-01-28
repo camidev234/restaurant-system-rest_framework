@@ -1,14 +1,17 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from users.services.user_service import UserService
 
-class OrderConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
+class OrderListConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self): 
         user = self.scope.get("user")
         if user.is_anonymous:
             await self.close()
-
-        self.order_id = self.scope["url_route"]["kwargs"]["order_id"]
-        self.group_name = f"group_order_{self.order_id}"
+        
+        user = UserService().get_user_instance(user.id)
+        
+        self.group_name = f"order_list_restaurant_{user.restaurant.id}"
         
         await self.channel_layer.group_add(
             self.group_name,
@@ -17,13 +20,15 @@ class OrderConsumer(AsyncWebsocketConsumer):
         
         await self.accept()
         
-    async def disconnect(self, close_code):
+        
+    async def disconnect(self, code):
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
-        )  
+        )
         
-        self.close()  
+        self.close()
+        
         
     async def order_status_update(self, event):
         order_id = event["order_id"]
@@ -34,5 +39,5 @@ class OrderConsumer(AsyncWebsocketConsumer):
             "order_id": order_id,
             "status_id": status_id,
             "message": message
-        }))        
-        
+        }))      
+
