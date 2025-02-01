@@ -134,5 +134,17 @@ class OrderAssignController(APIView):
         if result:
             api_response = ApiSuccessResponse(200, None, "Order assigned successfully")
             return Response(api_response.get_response(), status=status.HTTP_200_OK)
+        
+class OrderDeliverController(APIView):
+    def __init__(self, order_service=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        
+    def patch(self, request, pk):
+        result = self.order_service.deliver_order(pk, request.user)
+        
+        if result:
+            api_response = ApiSuccessResponse(200, None, "Order Devlivered successfully")
+            return Response(api_response.get_response(), status=status.HTTP_200_OK)
     
         
