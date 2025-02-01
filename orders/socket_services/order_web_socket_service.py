@@ -1,7 +1,7 @@
 from channels.layers import get_channel_layer
 
 class OrderWebSocketService:
-    async def send_order_update(self, order_id, status_id):
+    async def send_order_update(self, order_id, status_id, status_name):
         """
         Envía un mensaje al grupo de WebSocket basado en el order_id
         para notificar sobre el cambio de estado de la orden.
@@ -20,11 +20,12 @@ class OrderWebSocketService:
                 'type': 'order_status_update',
                 'order_id': order_id,
                 'status_id': status_id,
+                'status_name': status_name,
                 'message': "Order status updated"
             }
         )
         
-    async def send_order_list_restaurant_update(self, order_id, status_id, restaurant_id):
+    async def send_order_list_restaurant_update(self, order_id, status_id, restaurant_id, status_name):
         """
         Envía un mensaje al grupo de WebSocket basado en el restaurante al que petenece al usuario
         cuando establecio la conexion, para notificar sobre el cambio de estado de la orden.
@@ -45,6 +46,7 @@ class OrderWebSocketService:
                 'type': 'order_status_update',
                 'order_id': order_id,
                 'status_id': status_id,
+                'status_name': status_name,
                 'message': "Order status updated"
             }
         )

@@ -29,10 +29,12 @@ class OrderConsumer(AsyncWebsocketConsumer):
         order_id = event["order_id"]
         status_id = event["status_id"]
         message = event["message"]
+        status_name = event["status_name"]
         
         await self.send(text_data=json.dumps({
             "order_id": order_id,
             "status_id": status_id,
-            "message": message
+            "message": message,
+            "status_name": status_name
         }))        
         

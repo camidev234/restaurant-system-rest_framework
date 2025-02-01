@@ -25,6 +25,7 @@ class JWTAuthMiddleware(BaseMiddleware):
                 # se busca el usuario obteniendo el user_id de los claims
                 user = await self.get_user(payload.get("user_id"))
                 # se asigna al user del scope del socket, el usuario encontrado
+                print("usuario", user)
                 scope["user"] = user
             except (InvalidToken, TokenError) as e:
                 # en caso de que al ejecutar UntypedToken, genera alguno de estos dos excepciones

@@ -49,7 +49,9 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'restaurantsystem.asgi.application'
 
-# sin redis
+
+import os
+# con redis
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

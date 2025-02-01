@@ -158,7 +158,8 @@ class OrderService:
             order.save()
 
             # función asíncrona de WebSocket de manera síncrona
-            async_to_sync(self.order_socket_service.send_order_update)(order.id, order.status.id)
+            async_to_sync(self.order_socket_service.send_order_update)(order.id, order.status.id, order.status.status_name)
+            async_to_sync(self.order_socket_service.send_order_list_restaurant_update)(order.id, order.status.id, order.restaurant.id,  order.status.status_name)
             
             return True
         
