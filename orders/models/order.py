@@ -12,7 +12,7 @@ class Order(models.Model):
     special_instructions = models.TextField(null=True, blank=True)
     
     dealer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='dealer_orders', null=True, blank=True)
-    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE, related_name='orders', default=1)
+    status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE, related_name='orders', default=5)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     

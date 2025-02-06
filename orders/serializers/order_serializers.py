@@ -84,5 +84,11 @@ class OrderAssignSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['dealer_id']
+        
+class OrderPayedSerializer(serializers.Serializer):
+    pse_url = serializers.CharField()
+    
+class OrderPaySerializer(serializers.Serializer):
+    order_id = serializers.IntegerField(required=True, read_only=True)
     
     

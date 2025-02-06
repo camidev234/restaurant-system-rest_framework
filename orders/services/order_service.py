@@ -1,4 +1,4 @@
-from orders.serializers.order_serializers import OrderSaveSerializer, OrderInvalidSerializer, OrderAssignSerializer, OrderSerializer, OrderGetSerializer
+from orders.serializers.order_serializers import OrderSaveSerializer, OrderInvalidSerializer, OrderPaySerializer, OrderPayedSerializer, OrderAssignSerializer, OrderSerializer, OrderGetSerializer
 from rest_framework.exceptions import ValidationError, NotFound, PermissionDenied
 from menu.models.menu_item import MenuItem
 from orders.serializers.order_item_serializers import OrderItemGetSerializer
@@ -8,11 +8,29 @@ from orders.models.order import Order
 from users.models.users import User
 from orders.socket_services.order_web_socket_service import OrderWebSocketService
 from asgiref.sync import async_to_sync
+from orders.services.http_services.http_services import HttpServices 
 
 class OrderService:
     
     def __init__(self, order_socket_service=None):
         self.order_socket_service = order_socket_service or OrderWebSocketService()
+        
+    def create_order_payment(self, request_data):
+        serializer = OrderPaySerializer(data=request_data)
+        
+        if serializer.is_valid():
+            order = self.__get_order_instance(request_data.order_id)
+            success_obj = HttpServices.pay_order_request(order)
+            if success_obj.get("pse_url"):
+                order.status = 2
+                order.save()
+                response = OrderPayedSerializer(success_obj)
+                return (True, response.data)
+
+            return (False, success_obj)  
+        
+        raise ValidationError(serializer.errors)   
+           
 
     def save(self, data, user_auth):
         serializer = OrderSaveSerializer(data=data)
@@ -53,6 +71,9 @@ class OrderService:
                 order_data['customer_id'] = user_auth.id
 
                 with transaction.atomic():
+                    
+                    # se pasa el estado de la orden a id 5 "Pendiente por pago"
+                                        
                     order_saved = serializer.save() 
                     
 
@@ -149,13 +170,21 @@ class OrderService:
         if serializer.is_valid():
             order = self.__get_order_instance(order_id)
             dealer = User.objects.get(id=data["dealer_id"])
+            order.dealer = dealer
+            
+            match order.status_id:
+                case 1:
+                    order.status_id = 2  
+                    order.save() 
+                case 2:
+                    order.save()
+                case 3:
+                    return False
+                case 4: 
+                    return False
 
             if dealer.restaurant != order.restaurant:
                 raise PermissionDenied("The delivery person must belong to the same restaurant as the order")
-
-            order.dealer = dealer
-            order.status_id = 2  
-            order.save()
 
             # función asíncrona de WebSocket de manera síncrona
             async_to_sync(self.order_socket_service.send_order_update)(order.id, order.status.id, order.status.status_name)

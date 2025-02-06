@@ -135,6 +135,9 @@ class OrderAssignController(APIView):
             api_response = ApiSuccessResponse(200, None, "Order assigned successfully")
             return Response(api_response.get_response(), status=status.HTTP_200_OK)
         
+        api_response = ApiErrorResponse(400, None, "An error ocurred, maybe the order cannot be assigned")
+        return Response(api_response.get_response(),status=status.HTTP_400_BAD_REQUEST)
+        
 class OrderDeliverController(APIView):
     def __init__(self, order_service=None):
         super().__init__()
@@ -146,5 +149,19 @@ class OrderDeliverController(APIView):
         if result:
             api_response = ApiSuccessResponse(200, None, "Order Devlivered successfully")
             return Response(api_response.get_response(), status=status.HTTP_200_OK)
+        
+class OrderPayController(APIView):
+    def __init__(self, order_service=None):
+        super().__init__()
+        self.order_service = order_service or OrderService()
+        
+    def post(self, request):
+        (success, data) = self.order_service.create_order_payment(request.data) 
+        if success:
+            api_response = ApiSuccessResponse(200, data, "Order payed sucessfully")
+            return Response(api_response.get_response(), status=status.HTTP_200_OK)
+        
+        api_response = ApiErrorResponse(400, None, data.get("error"))
+        return Response(api_response.get_response(), status=status.HTTP_400_BAD_REQUEST)
     
         
