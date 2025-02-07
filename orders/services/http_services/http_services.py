@@ -1,5 +1,6 @@
 import requests
 from requests.auth import HTTPBasicAuth
+from decimal import Decimal
 
 class HttpServices:
     @staticmethod
@@ -9,10 +10,10 @@ class HttpServices:
             auth=HTTPBasicAuth('sk_572944e2f89740f2b7dbad9fef8d6b89',"m58o2ppbhnxvda4bdbbk"),
             json={
                 "method" : "bank_account",
-                "amount" : order.total_amount,
+                "amount" : int(order.total_amount * 1000),
                 "currency" : "COP",
                 "description" : f"Pago de orden no {order.id}",
-                "order_id" : f"{order.id}",
+                "order_id" : f"{order.id+4}",
                 "iva" : "1900",
                 "redirect_url":"https://www.openpay.co/",
                 "customer" : {
@@ -24,6 +25,8 @@ class HttpServices:
                 }
             }
         )
+        
+        print(response.json())
         
         if response.status_code == 200:
             response_obj = {

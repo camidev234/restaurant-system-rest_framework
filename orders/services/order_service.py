@@ -19,11 +19,9 @@ class OrderService:
         serializer = OrderPaySerializer(data=request_data)
         
         if serializer.is_valid():
-            order = self.__get_order_instance(request_data.order_id)
+            order = self.__get_order_instance(request_data["order_id"])
             success_obj = HttpServices.pay_order_request(order)
             if success_obj.get("pse_url"):
-                order.status = 2
-                order.save()
                 response = OrderPayedSerializer(success_obj)
                 return (True, response.data)
 

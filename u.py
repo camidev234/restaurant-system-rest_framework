@@ -4,7 +4,4 @@ dictes = {
     }
 }
 
-if dictes.get("uno"):
-    print("hola")
-else:
-    print("chau")
+print(dictes)

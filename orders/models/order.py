@@ -3,6 +3,7 @@ from users.models.users import User
 from orders.models.order_status import OrderStatus
 from restaurants.models import Restaurant
 
+
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

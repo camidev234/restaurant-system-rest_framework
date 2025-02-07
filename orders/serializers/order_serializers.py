@@ -89,6 +89,6 @@ class OrderPayedSerializer(serializers.Serializer):
     pse_url = serializers.CharField()
     
 class OrderPaySerializer(serializers.Serializer):
-    order_id = serializers.IntegerField(required=True, read_only=True)
+    order_id = serializers.IntegerField(required=True)
     
     
