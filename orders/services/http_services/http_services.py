@@ -5,13 +5,13 @@ from decimal import Decimal
 class HttpServices:
     @staticmethod
     def pay_order_request(order, payment_order_id):
-        
+        #int(order.total_amount * 1000)
         response = requests.post(
             "https://sandbox-api.openpay.co/v1/m58o2ppbhnxvda4bdbbk/charges",
             auth=HTTPBasicAuth('sk_572944e2f89740f2b7dbad9fef8d6b89',"m58o2ppbhnxvda4bdbbk"),
             json={
                 "method" : "bank_account",
-                "amount" : int(order.total_amount * 1000),
+                "amount" : 1000,
                 "currency" : "COP",
                 "description" : f"Pago de pedido no {order.id}",
                 "order_id" : str(payment_order_id),

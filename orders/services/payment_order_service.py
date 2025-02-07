@@ -1,4 +1,5 @@
 from orders.models.payment_orders import PaymentOrder
+from rest_framework.exceptions import NotFound
 
 class PaymentOrderService:
     
@@ -18,3 +19,10 @@ class PaymentOrderService:
         payment_order.save()
         
         return True
+    
+    def find_payment_order(self, id):
+        try:
+            payment_order = PaymentOrder.objects.get(order_gateway_id=id)
+            return payment_order
+        except PaymentOrder.DoesNotExist:
+            raise NotFound("The order does not found, please check the number")

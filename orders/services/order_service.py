@@ -11,24 +11,27 @@ from asgiref.sync import async_to_sync
 from orders.services.http_services.http_services import HttpServices 
 from orders.models.payment_orders import PaymentOrder
 from orders.services.payment_order_service import PaymentOrderService
+from django.db import transaction
+from orders.services.webhooks.webhook_payment_handler import WebhookPaymentHandler
 
 class OrderService:
     
-    def __init__(self, order_socket_service=None):
+    def __init__(self, order_socket_service=None, payment_order_service=None, webhook_payment_handler=None):
         self.order_socket_service = order_socket_service or OrderWebSocketService()
+        self.payment_order_service = payment_order_service or PaymentOrderService()
+        self.webhook_payment_handler = webhook_payment_handler or WebhookPaymentHandler()
         
     def create_order_payment(self, request_data):
-        payment_order_service = PaymentOrderService()
         serializer = OrderPaySerializer(data=request_data)
         
         if serializer.is_valid():
             order = self.__get_order_instance(request_data["order_id"])
-            payment_order = payment_order_service.save_payment_order(order)
+            payment_order = self.payment_order_service.save_payment_order(order)
             success_obj = HttpServices.pay_order_request(order, payment_order.order_gateway_id)
             
             if success_obj.get("pse_url"):
                 response = OrderPayedSerializer(success_obj)
-                payment_order_service.assign_order_transaction(
+                self.payment_order_service.assign_order_transaction(
                     payment_order, 
                     success_obj.get("transaction_id")
                 )
@@ -39,6 +42,21 @@ class OrderService:
         
         raise ValidationError(serializer.errors)   
            
+           
+    def receive_payment_webhook(self, type, order_gateway_id):
+        match type:
+            case "charge.succeeded":
+                result = self.webhook_payment_handler.handle_charge_succeeded(
+                    order_gateway_id,
+                    self.payment_order_service,
+                )
+                
+                return result
+            case "charge.cancelled":
+                pass
+            case "charge.failed":
+                pass
+                
 
     def save(self, data, user_auth):
         serializer = OrderSaveSerializer(data=data)
