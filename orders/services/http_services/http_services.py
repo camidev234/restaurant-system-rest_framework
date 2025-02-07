@@ -31,6 +31,7 @@ class HttpServices:
         
         if response.status_code == 200:
             response_obj = {
+                "order_gateway_id": payment_order_id,
                 "transaction_id": response.json().get("id"),
                 "pse_url": response.json().get("payment_method").get("url")
             }

@@ -22,6 +22,5 @@ class PaymentWebSocketService:
                 'type': 'order_status_update',
                 'payment_order_id': payment_order_id,
                 'status': status,
-                'message': ""
             }
         )

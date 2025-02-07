@@ -13,6 +13,8 @@ class PaymentConsumer(AsyncWebsocketConsumer):
         self.payment_order_id = self.scope["url_route"]["kwargs"]["payment_order_id"]
         self.group_name = f"payment_status_{self.payment_order_id}"
         
+        print(self.group_name)
+        
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
@@ -33,11 +35,9 @@ class PaymentConsumer(AsyncWebsocketConsumer):
     async def order_status_update(self, event):
         order_id = event["payment_order_id"]
         status = event["status"]
-        message = event["message"]
         
         await self.send(text_data=json.dumps({
             "payment_order_id": order_id,
-            "status": status,
-            "message": message,
+            "status": status
         }))      
 
