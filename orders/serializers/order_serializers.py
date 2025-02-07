@@ -86,6 +86,7 @@ class OrderAssignSerializer(serializers.ModelSerializer):
         fields = ['dealer_id']
         
 class OrderPayedSerializer(serializers.Serializer):
+    transaction_id = serializers.CharField()
     pse_url = serializers.CharField()
     
 class OrderPaySerializer(serializers.Serializer):

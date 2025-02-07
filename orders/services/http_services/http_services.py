@@ -4,17 +4,17 @@ from decimal import Decimal
 
 class HttpServices:
     @staticmethod
-    def pay_order_request(order):
-        # int(order.total_amount * 1000)
+    def pay_order_request(order, payment_order_id):
+        
         response = requests.post(
             "https://sandbox-api.openpay.co/v1/m58o2ppbhnxvda4bdbbk/charges",
             auth=HTTPBasicAuth('sk_572944e2f89740f2b7dbad9fef8d6b89',"m58o2ppbhnxvda4bdbbk"),
             json={
                 "method" : "bank_account",
-                "amount" : 10,
+                "amount" : int(order.total_amount * 1000),
                 "currency" : "COP",
-                "description" : f"Pago de orden no {order.id}",
-                "order_id" : f"{order.id+32}",
+                "description" : f"Pago de pedido no {order.id}",
+                "order_id" : str(payment_order_id),
                 "iva" : "1900",
                 "redirect_url":"https://www.openpay.co/",
                 "customer" : {
@@ -31,6 +31,7 @@ class HttpServices:
         
         if response.status_code == 200:
             response_obj = {
+                "transaction_id": response.json().get("id"),
                 "pse_url": response.json().get("payment_method").get("url")
             }
             return response_obj

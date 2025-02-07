@@ -9,6 +9,8 @@ from users.models.users import User
 from orders.socket_services.order_web_socket_service import OrderWebSocketService
 from asgiref.sync import async_to_sync
 from orders.services.http_services.http_services import HttpServices 
+from orders.models.payment_orders import PaymentOrder
+from orders.services.payment_order_service import PaymentOrderService
 
 class OrderService:
     
@@ -16,13 +18,21 @@ class OrderService:
         self.order_socket_service = order_socket_service or OrderWebSocketService()
         
     def create_order_payment(self, request_data):
+        payment_order_service = PaymentOrderService()
         serializer = OrderPaySerializer(data=request_data)
         
         if serializer.is_valid():
             order = self.__get_order_instance(request_data["order_id"])
-            success_obj = HttpServices.pay_order_request(order)
+            payment_order = payment_order_service.save_payment_order(order)
+            success_obj = HttpServices.pay_order_request(order, payment_order.order_gateway_id)
+            
             if success_obj.get("pse_url"):
                 response = OrderPayedSerializer(success_obj)
+                payment_order_service.assign_order_transaction(
+                    payment_order, 
+                    success_obj.get("transaction_id")
+                )
+                
                 return (True, response.data)
 
             return (False, success_obj)  
