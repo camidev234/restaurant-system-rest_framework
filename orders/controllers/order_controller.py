@@ -168,4 +168,15 @@ class OrderPayController(APIView):
         api_response = ApiErrorResponse(400, None, data.get("error"))
         return Response(api_response.get_response(), status=status.HTTP_400_BAD_REQUEST)
     
+class OrderWebhookController(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        print("WEBHOOK RECIBIDO")
+        print(request.data)
+        
+        return Response({
+            "message_suc": "weebhook received successfully" 
+        }, status=status.HTTP_200_OK)
+    
         
