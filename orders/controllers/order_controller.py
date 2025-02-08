@@ -176,8 +176,8 @@ class OrderWebhookController(APIView):
         self.order_service = order_service or OrderService()
     
     def post(self, request):
-        print("WEBHOOK RECIBIDO")
-        print(request.data)
+        # print("WEBHOOK RECIBIDO")
+        # print(request.data)
         result = self.order_service.receive_payment_webhook(
             request.data["type"], 
             request.data["transaction"]["order_id"]
