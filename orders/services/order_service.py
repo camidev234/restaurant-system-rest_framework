@@ -26,19 +26,23 @@ class OrderService:
         
         if serializer.is_valid():
             order = self.__get_order_instance(request_data["order_id"])
+            if order.status != 5:
+                return (False, {
+                    "error": "The order has already been paid"
+                })
             payment_order = self.payment_order_service.save_payment_order(order)
-            success_obj = HttpServices.pay_order_request(order, payment_order.order_gateway_id)
+            response_obj = HttpServices.pay_order_request(order, payment_order.order_gateway_id)
             
-            if success_obj.get("pse_url"):
-                response = OrderPayedSerializer(success_obj)
+            if response_obj.get("pse_url"):
+                response = OrderPayedSerializer(response_obj)
                 self.payment_order_service.assign_order_transaction(
                     payment_order, 
-                    success_obj.get("transaction_id")
+                    response_obj.get("transaction_id")
                 )
                 
                 return (True, response.data)
 
-            return (False, success_obj)  
+            return (False, response_obj)  
         
         raise ValidationError(serializer.errors)   
            

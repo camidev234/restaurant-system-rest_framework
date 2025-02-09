@@ -29,6 +29,7 @@ class HttpServices:
         
         print(response.json())
         
+        # variable response save the openpay response
         if response.status_code == 200:
             response_obj = {
                 "order_gateway_id": payment_order_id,
