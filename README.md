@@ -1,7 +1,9 @@
 ## QuickDine
 
-## Descripción Técnica:
-**QuickDine** es una plataforma de gestión de pedidos para restaurantes, diseñada para optimizar la interacción entre restaurantes, domiciliarios y clientes. Está implementada con un enfoque en el backend y una arquitectura escalable, permitiendo a los restaurantes gestionar su menú, domiciliarios y pedidos de manera eficiente a través de una API RESTful, garantizando una experiencia de usuario ágil y segura.
+<details>
+  <summary>## Descripcion tecnica</summary>
+
+  **QuickDine** es una plataforma de gestión de pedidos para restaurantes, diseñada para optimizar la interacción entre restaurantes, domiciliarios y clientes. Está implementada con un enfoque en el backend y una arquitectura escalable, permitiendo a los restaurantes gestionar su menú, domiciliarios y pedidos de manera eficiente a través de una API RESTful, garantizando una experiencia de usuario ágil y segura.
 
 ---
 
@@ -41,4 +43,9 @@
   Integración para procesar pagos de manera segura a través de **PSE**.
 
   ![Proceso de creacion de ordenes y pago por PSE](https://github.com/camidev234/restaurant-system-rest_framework/blob/master/procesopagopsejpeg.jpg?raw=true)
+
+</details>
+
+
+
 
