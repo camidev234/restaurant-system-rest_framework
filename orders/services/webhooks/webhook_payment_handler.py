@@ -2,6 +2,7 @@ from django.db import transaction
 from orders.models.order import Order
 from orders.socket_services.payment_web_socket_service import PaymentWebSocketService
 from asgiref.sync import async_to_sync
+from rest_framework.exceptions import NotFound
 
 class WebhookPaymentHandler:
     
@@ -32,6 +33,8 @@ class WebhookPaymentHandler:
         except Exception as e:
                 print(f"Error to process webhook {e}")
                 return False
+        except Order.DoesNotExist:
+            raise NotFound(f"There is no order associated with this order_id {order_gateway_id}")
 
     @staticmethod
     def handle_charge_cancelled(order_gateway_id, payment_order_service, order_service):
