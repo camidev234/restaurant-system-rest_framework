@@ -33,9 +33,12 @@
 - **WebSockets**:  
   Implementados para notificar en tiempo real a los clientes integrados con la API sobre cambios de estado en las órdenes (pedidos) y actualizaciones del estado de un pago asociado a una orden específica.  
 
+
 - **Docker**:  
   Utilizado para contenerizar la aplicación y facilitar el despliegue en diferentes entornos, garantizando consistencia y portabilidad.  
 
 - **Pasarela de Pago (Openpay)**:  
-  Integración para procesar pagos de manera segura a través de **PSE**.  
+  Integración para procesar pagos de manera segura a través de **PSE**.
+
+  ![Proceso de creacion de ordenes y pago por PSE]([https://github.com/usuario/repositorio/ruta/de/la/imagen.png](https://github.com/camidev234/restaurant-system-rest_framework/blob/master/procesopagopsejpeg.jpg))
 
