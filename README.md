@@ -3,13 +3,13 @@
 <details>
   <summary>Descripcion tecnica</summary>
 
-  **QuickDine** es una plataforma de gestión de pedidos para restaurantes, diseñada para optimizar la interacción entre restaurantes, domiciliarios y clientes. Está implementada con un enfoque en el backend y una arquitectura escalable, permitiendo a los restaurantes gestionar su menú, domiciliarios y pedidos de manera eficiente a través de una API RESTful, garantizando una experiencia de usuario ágil y segura.
+  **QuickDine** es una plataforma de gestión de pedidos para restaurantes, diseñada para optimizar la interacción entre restaurantes, domiciliarios y clientes. Está implementada con un enfoque en el backend y una arquitectura escalable, permitiendo a los restaurantes gestionar su menú, domiciliarios y pedidos de manera eficiente a través de una API RESTful.
 
 ---
 
 ## Características clave:
 - **Gestión de roles y permisos**:  
-  El sistema maneja roles como **Domiciliarios**, **Clientes** y **Restaurantes**, cada uno con acceso restringido a ciertos endpoints. La validación de permisos se realiza mediante middleware, permitiendo configurar permisos globalmente para el sistema y adaptándose a necesidades específicas sin necesidad de modificar el código.
+  El sistema maneja roles como **Domiciliarios**, **Clientes** y **Restaurantes**, cada uno con acceso restringido a ciertos endpoints. La validación de permisos se realiza mediante middleware, permitiendo configurar permisos globalmente para el sistema y adaptándose a necesidades específicas sin necesidad de modificar el código. De la misma manera, estos roles son configurables de manera que en el tiempo el nombre de los mismos puede cambiar e inclusive se podran crear nuevos; los roles que se configuren, tambien son globales para toda la plataforma.
 
 - **Autenticación y seguridad**:  
   Implementación de autenticación basada en **JWT** para garantizar la seguridad de los endpoints, con un sistema de validación que verifica el acceso de los usuarios según su rol y los permisos asignados.
@@ -37,7 +37,7 @@
 
 
 - **Docker**:  
-  Utilizado para contenerizar la aplicación y facilitar el despliegue en diferentes entornos, garantizando consistencia y portabilidad.  
+  Utilizado para contenerizar la aplicación y facilitar el despliegue en diferentes entornos.
 
 - **Pasarela de Pago (Openpay)**:  
   Integración para procesar pagos de manera segura a través de **PSE**.
