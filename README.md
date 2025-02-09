@@ -40,5 +40,5 @@
 - **Pasarela de Pago (Openpay)**:  
   Integración para procesar pagos de manera segura a través de **PSE**.
 
-  ![Proceso de creacion de ordenes y pago por PSE]([https://github.com/usuario/repositorio/ruta/de/la/imagen.png](https://github.com/camidev234/restaurant-system-rest_framework/blob/master/procesopagopsejpeg.jpg))
+  ![Proceso de creacion de ordenes y pago por PSE](https://github.com/usuario/repositorio/ruta/de/la/imagen.png](https://github.com/camidev234/restaurant-system-rest_framework/blob/master/procesopagopsejpeg.jpg)
 
