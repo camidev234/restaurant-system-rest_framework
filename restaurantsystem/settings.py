@@ -9,6 +9,12 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 from pathlib import Path
 from datetime import timedelta  
 
@@ -49,8 +55,6 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'restaurantsystem.asgi.application'
 
-
-import os
 # con redis
 CHANNEL_LAYERS = {
     'default': {
@@ -127,11 +131,11 @@ WSGI_APPLICATION = 'restaurantsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'restaurant_test_db',
-        'USER': 'postgres',
-        'PASSWORD': '1013108226',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("POSTGRES_HOST"),
+        'PORT': os.getenv("POSTGRES_PORT")
     }
 }
 

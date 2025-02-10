@@ -1,14 +1,17 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from decimal import Decimal
+import os
 
 class HttpServices:
     @staticmethod
     def pay_order_request(order, payment_order_id):
+        merchant_id = os.getenv("MERCHANT_ID")
+        openpay_secret = os.getenv("OPENPAY_SECRET_KEY") 
         #int(order.total_amount * 1000)
         response = requests.post(
-            "https://sandbox-api.openpay.co/v1/m58o2ppbhnxvda4bdbbk/charges",
-            auth=HTTPBasicAuth('sk_572944e2f89740f2b7dbad9fef8d6b89',"m58o2ppbhnxvda4bdbbk"),
+            f"https://sandbox-api.openpay.co/v1/{str(merchant_id)}/charges",
+            auth=HTTPBasicAuth(str(openpay_secret), str(merchant_id)),
             json={
                 "method" : "bank_account",
                 "amount" : 1000,

@@ -3,6 +3,7 @@ from orders.models.order import Order
 from orders.socket_services.payment_web_socket_service import PaymentWebSocketService
 from asgiref.sync import async_to_sync
 from rest_framework.exceptions import NotFound
+from orders.socket_services.order_web_socket_service import OrderWebSocketService
 
 class WebhookPaymentHandler:
     
@@ -10,6 +11,7 @@ class WebhookPaymentHandler:
     def handle_charge_succeeded(order_gateway_id, payment_order_service):
         try:
             payment_socket_service = PaymentWebSocketService()
+            order_web_socket_service = OrderWebSocketService()
             with transaction.atomic():
                 payment_order = payment_order_service.find_payment_order(order_gateway_id)
                 
@@ -26,7 +28,21 @@ class WebhookPaymentHandler:
                 payment_order.save()
                 
                 
-                async_to_sync(payment_socket_service.send_payment_status)(payment_order.order_gateway_id, "payment.successful")
+                async_to_sync(payment_socket_service.send_payment_status)(
+                    payment_order.order_gateway_id, 
+                    "payment.successful"
+                )
+                async_to_sync(order_web_socket_service.send_order_list_restaurant_update)(
+                    order.id, 
+                    order.status_id, 
+                    order.restaurant_id, 
+                    order.status.status_name
+                )
+                async_to_sync(order_web_socket_service.send_order_update)(
+                    order.id, 
+                    order.status_id, 
+                    order.status.status_name
+                )
                 
             return True
                 
@@ -45,8 +61,10 @@ class WebhookPaymentHandler:
             payment_order.status = "Cancelado"
             payment_order.save()
             
-            async_to_sync(payment_socket_service.send_payment_status)(payment_order.order_gateway_id, "payment.cancelled")
-                
+            async_to_sync(payment_socket_service.send_payment_status)(
+                    payment_order.order_gateway_id, 
+                    "payment.successful"
+                )
             return True
         except Exception as e:
             print(f"Error to process webhook {e}")
@@ -61,7 +79,10 @@ class WebhookPaymentHandler:
             payment_order.status = "FALLIDO"
             payment_order.save()
             
-            async_to_sync(payment_socket_service.send_payment_status)(payment_order.order_gateway_id, "payment.failed")
+            async_to_sync(payment_socket_service.send_payment_status)(
+                payment_order.order_gateway_id, 
+                "payment.failed"
+            )
                 
             return True
         except Exception as e:
