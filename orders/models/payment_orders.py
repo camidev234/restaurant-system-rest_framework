@@ -6,7 +6,8 @@ class PaymentOrder(models.Model):
     STATUS_CHOICES = [
         ("PENDIENTE", "Pendiente"),
         ("EXITOSO", "Exitoso"),
-        ("FALLIDO", "FALLIDO")
+        ("FALLIDO", "FALLIDO"),
+        ("CANCELADO", "Cancelado")
     ]
     
     order_gateway_id = models.CharField(unique=True, null=True)

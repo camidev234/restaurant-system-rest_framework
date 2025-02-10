@@ -26,7 +26,8 @@ class OrderService:
         
         if serializer.is_valid():
             order = self.__get_order_instance(request_data["order_id"])
-            if order.status != 5:
+            print(order.status.id)
+            if order.status.id != 5:
                 return (False, {
                     "error": "The order has already been paid"
                 })
@@ -57,9 +58,19 @@ class OrderService:
                 
                 return result
             case "charge.cancelled":
-                pass
+                result = self.webhook_payment_handler.handle_charge_cancelled(
+                    order_gateway_id, 
+                    self.payment_order_service
+                )
+                
+                return result
             case "charge.failed":
-                pass
+                result = self.webhook_payment_handler.handle_charge_failed(
+                    order_gateway_id,
+                    self.payment_order_service
+                )
+                
+                return result
                 
 
     def save(self, data, user_auth):

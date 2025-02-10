@@ -37,9 +37,34 @@ class WebhookPaymentHandler:
             raise NotFound(f"There is no order associated with this order_id {order_gateway_id}")
 
     @staticmethod
-    def handle_charge_cancelled(order_gateway_id, payment_order_service, order_service):
-        pass
+    def handle_charge_cancelled(order_gateway_id, payment_order_service):
+        try:
+            payment_socket_service = PaymentWebSocketService()
+            payment_order = payment_order_service.find_payment_order(order_gateway_id)
 
+            payment_order.status = "Cancelado"
+            payment_order.save()
+            
+            async_to_sync(payment_socket_service.send_payment_status)(payment_order.order_gateway_id, "payment.cancelled")
+                
+            return True
+        except Exception as e:
+            print(f"Error to process webhook {e}")
+            return False    
+        
     @staticmethod
-    def handle_charge_failed(order_gateway_id, payment_order_service, order_service):
-        pass
+    def handle_charge_failed(order_gateway_id, payment_order_service):
+        try:
+            payment_socket_service = PaymentWebSocketService()
+            payment_order = payment_order_service.find_payment_order(order_gateway_id)
+
+            payment_order.status = "FALLIDO"
+            payment_order.save()
+            
+            async_to_sync(payment_socket_service.send_payment_status)(payment_order.order_gateway_id, "payment.failed")
+                
+            return True
+        except Exception as e:
+            print(f"Error to process webhook {e}")
+            return False    
+         
