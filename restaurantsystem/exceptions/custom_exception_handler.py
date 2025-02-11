@@ -14,7 +14,7 @@ def custom_exception_handler(exc, context):
     
     if isinstance(exc, NotFound):
         error_response = ApiErrorResponse(404, message=exc.detail)
-        return Response(error_response.get_response(), status=status.HTTP_400_BAD_REQUEST)
+        return Response(error_response.get_response(), status=status.HTTP_404_NOT_FOUND)
     
     if isinstance(exc, AuthenticationFailed):
         error_response = ApiErrorResponse(401, message=exc.detail)
