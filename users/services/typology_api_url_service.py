@@ -1,5 +1,5 @@
 from rest_framework.exceptions import ValidationError, NotFound
-from users.serializers.typology_api_url_serializers import TypologyApiUrlSaveSerializer, TypologyApiUrlInvalidSerializer
+from users.serializers.typology_api_url_serializers import TypologyApiUrlSaveSerializer, TypologyApiUrlGetListSerializer, TypologyApiUrlInvalidSerializer
 from users.models.api_url import ApiUrl
 from users.models.typology_api_url import TypologyApiUrl
 from django.db import transaction
@@ -62,3 +62,8 @@ class TypologyApiUrlService:
         permission_to_delete = self.get_typology_permission_instance(permission_id)
         permission_to_delete.delete()
         return True
+    
+    def get_user_permissions(self, typology_id):
+        typology_api_urls = TypologyApiUrlGetListSerializer(TypologyApiUrl.objects.filter(typology_id = typology_id), many=True)
+        # print(typology_api_urls.data)
+        return typology_api_urls.data

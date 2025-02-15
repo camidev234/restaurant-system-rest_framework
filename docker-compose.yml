@@ -34,17 +34,17 @@ services:
     volumes:
       - redis_data:/data
 
-  webhook_tunnel:
-    image: webhookrelay/webhookrelayd:latest
-    container_name: webhook_tunnel
-    command: --mode tunnel -k 9c38dcce-5e7f-418e-bf51-a83ae063d9e1 -s sr2ypJqdP74c -t restaurantsystem
-    network_mode: host
+  # webhook_tunnel:
+  #   image: webhookrelay/webhookrelayd:latest
+  #   container_name: webhook_tunnel
+  #   command: --mode tunnel -k 9c38dcce-5e7f-418e-bf51-a83ae063d9e1 -s sr2ypJqdP74c -t restaurantsystem
+  #   network_mode: host
 
-  webhook_bucket:
-    image: webhookrelay/webhookrelayd:latest
-    container_name: webhook_bucket
-    command: -k 3b1086d2-a860-46ef-88dd-7a2ea878ee43 -s gcxLIkRdXO3A -b restaurantone
-    network_mode: host
+  # webhook_bucket:
+  #   image: webhookrelay/webhookrelayd:latest
+  #   container_name: webhook_bucket
+  #   command: -k 3b1086d2-a860-46ef-88dd-7a2ea878ee43 -s gcxLIkRdXO3A -b restaurantone
+  #   network_mode: host
 
 volumes:
   postgres_data:

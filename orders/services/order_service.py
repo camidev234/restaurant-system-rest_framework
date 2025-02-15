@@ -223,6 +223,8 @@ class OrderService:
                     return False
                 case 4: 
                     return False
+                case 5:
+                    return False
 
             if dealer.restaurant != order.restaurant:
                 raise PermissionDenied("The delivery person must belong to the same restaurant as the order")
@@ -242,6 +244,9 @@ class OrderService:
         if user_auth.restaurant.id != order.restaurant.id:
             raise PermissionDenied("Only people from the same restaurant can deliver an order") 
 
+        if order.status_id == 5 or order.status_id == 4:
+            return False
+        
         order.status_id = 3
         order.save()
 
@@ -249,6 +254,10 @@ class OrderService:
         async_to_sync(self.order_socket_service.send_order_list_restaurant_update)(order.id, order.status.id, order.restaurant.id,  order.status.status_name)
         
         return True
+    
+    def cancel_order(self):
+        pass
+        
         
         
         

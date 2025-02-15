@@ -31,3 +31,11 @@ class TypologyApiUrlInvalidSerializer(serializers.Serializer):
     
     class Meta:
         fields = ['reason', 'invalid_ids']
+        
+
+class TypologyApiUrlGetListSerializer(serializers.ModelSerializer):
+    
+    
+    class Meta:
+        model = TypologyApiUrl
+        fields = ["id", "api_url", "typology_id"]
