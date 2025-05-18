@@ -15,37 +15,27 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/static
+    restart: unless-stopped
 
   db:
     image: postgres:15
     container_name: restaurant_postgre_container
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1013108226
+      POSTGRES_PASSWORD: G7m#9xV!2rLqZsN4
       POSTGRES_DB: restaurant_test_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+    restart: unless-stopped
   redis:
     image: redis:7
+    container_name: restaurant_redis_container
     command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
-
-  # webhook_tunnel:
-  #   image: webhookrelay/webhookrelayd:latest
-  #   container_name: webhook_tunnel
-  #   command: --mode tunnel -k 9c38dcce-5e7f-418e-bf51-a83ae063d9e1 -s sr2ypJqdP74c -t restaurantsystem
-  #   network_mode: host
-
-  # webhook_bucket:
-  #   image: webhookrelay/webhookrelayd:latest
-  #   container_name: webhook_bucket
-  #   command: -k 3b1086d2-a860-46ef-88dd-7a2ea878ee43 -s gcxLIkRdXO3A -b restaurantone
-  #   network_mode: host
-
+    restart: unless-stopped
 volumes:
   postgres_data:
   static_volume:

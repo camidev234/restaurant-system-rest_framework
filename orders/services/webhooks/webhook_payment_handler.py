@@ -11,53 +11,48 @@ class WebhookPaymentHandler:
     @staticmethod
     def handle_charge_succeeded(order_gateway_id, payment_order_service):
         try:
-            payment_socket_service = PaymentWebSocketService()
-            order_web_socket_service = OrderWebSocketService()
             with transaction.atomic():
                 payment_order = payment_order_service.find_payment_order(order_gateway_id)
-        
-                 #if transaction was success, update the order status to 2
-        
                 order = Order.objects.get(id=payment_order.order.id)
                 
                 order_payment_orders_paid = payment_order_service.get_order_payment_orders(order.id).filter(status="Exitoso")
                 if not order_payment_orders_paid:
-                    order.status_id = 2
+                    order.status_id = 1
                     order.save()
-
-                    # update the payment order to "Exitoso"
 
                     payment_order.status = "Exitoso"
                     payment_order.save()
 
+            try:
+                payment_socket_service = PaymentWebSocketService()
+                order_web_socket_service = OrderWebSocketService()
 
-                    async_to_sync(payment_socket_service.send_payment_status)(
-                        payment_order.order_gateway_id, 
-                        "payment.successful"
-                    )
-                    async_to_sync(order_web_socket_service.send_order_list_restaurant_update)(
-                        order.id, 
-                        order.status_id, 
-                        order.restaurant_id, 
-                        order.status.status_name
-                    )
-                    async_to_sync(order_web_socket_service.send_order_update)(
-                        order.id, 
-                        order.status_id, 
-                        order.status.status_name
-                    )
-                
-                    return True
-                
-                return False
+                async_to_sync(payment_socket_service.send_payment_status)(
+                    payment_order.order_gateway_id, 
+                    "payment.successful"
+                )
+                async_to_sync(order_web_socket_service.send_order_list_restaurant_update)(
+                    order.id, 
+                    order.status_id, 
+                    order.restaurant_id, 
+                    order.status.status_name
+                )
+                async_to_sync(order_web_socket_service.send_order_update)(
+                    order.id, 
+                    order.status_id, 
+                    order.status.status_name
+                )
+            except Exception as ws_error:
+                print(f"Error al enviar sockets: {ws_error}")
 
+            return True
+                
         except PaymentOrder.DoesNotExist:
-            raise NotFound(f"The payment order does not exists")
+            raise NotFound("The payment order does not exist")
         except Order.DoesNotExist:
             raise NotFound(f"There is no order associated with this order_id {order_gateway_id}")
         except Exception as e:
-            # print(f"Error to process webhook {e}")
-            return False
+            print(f"Error al procesar webhook: {e}")
 
     @staticmethod
     def handle_charge_cancelled(order_gateway_id, payment_order_service):

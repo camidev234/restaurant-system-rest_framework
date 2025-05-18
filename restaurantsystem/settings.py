@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-&wy+6swxmqwoo#y(_c_l-*&h$z1!y-dhvzxsk^qtkt#jycmjo+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'host.docker.internal']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -75,6 +75,7 @@ CELERY_TIMEZONE = 'America/Bogota'
 CELERY_ENABLE_UTC = True
 
 MIDDLEWARE = [
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

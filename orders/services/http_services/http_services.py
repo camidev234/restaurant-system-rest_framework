@@ -1,6 +1,6 @@
 import requests
 from requests.auth import HTTPBasicAuth
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import os
 
 class HttpServices:
@@ -8,13 +8,14 @@ class HttpServices:
     def pay_order_request(order, payment_order_id):
         merchant_id = os.getenv("MERCHANT_ID")
         openpay_secret = os.getenv("OPENPAY_SECRET_KEY") 
-        #int(order.total_amount * 1000)
+        amount = order.total_amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        amount_for_openpay = float(amount)
         response = requests.post(
             f"https://sandbox-api.openpay.co/v1/{str(merchant_id)}/charges",
             auth=HTTPBasicAuth(str(openpay_secret), str(merchant_id)),
             json={
                 "method" : "bank_account",
-                "amount" : 1000,
+                "amount" : int(order.total_amount),
                 "currency" : "COP",
                 "description" : f"Pago de pedido no {order.id}",
                 "order_id" : str(payment_order_id),
