@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD python manage.py migrate && daphne -b 0.0.0.0 -p 8000 restaurantsystem.asgi:application
+CMD python manage.py permissions_seed && daphne -b 0.0.0.0 -p 8000 restaurantsystem.asgi:application
