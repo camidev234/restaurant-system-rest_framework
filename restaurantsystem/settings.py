@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'restaurants',
     'rest_framework_simplejwt',
     'channels',
+    'webhooks'
 ]
 
 ASGI_APPLICATION = 'restaurantsystem.asgi.application'

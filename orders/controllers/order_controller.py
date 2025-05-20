@@ -177,11 +177,8 @@ class OrderWebhookController(APIView):
     
     def post(self, request):
         # print("WEBHOOK RECIBIDO")
-        # print(request.data)
-        result = self.order_service.receive_payment_webhook(
-            request.data["type"], 
-            request.data["transaction"]["order_id"]
-        )
+        print(request.data)
+        result = self.order_service.receive_payment_webhook(request.data)
         
         if result:
             api_response = ApiSuccessResponse(200, None, "Webhook received and porcessed successfully")

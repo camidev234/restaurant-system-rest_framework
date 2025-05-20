@@ -13,13 +13,15 @@ from orders.models.payment_orders import PaymentOrder
 from orders.services.payment_order_service import PaymentOrderService
 from django.db import transaction
 from orders.services.webhooks.webhook_payment_handler import WebhookPaymentHandler
+from webhooks.services.webhook_service import WebhookService
 
 class OrderService:
     
-    def __init__(self, order_socket_service=None, payment_order_service=None, webhook_payment_handler=None):
+    def __init__(self, order_socket_service=None, payment_order_service=None, webhook_payment_handler=None, webhook_service=None):
         self.order_socket_service = order_socket_service or OrderWebSocketService()
         self.payment_order_service = payment_order_service or PaymentOrderService()
         self.webhook_payment_handler = webhook_payment_handler or WebhookPaymentHandler()
+        self.webhook_service = webhook_service or WebhookService()
         
     def create_order_payment(self, request_data):
         serializer = OrderPaySerializer(data=request_data)
@@ -48,28 +50,38 @@ class OrderService:
         raise ValidationError(serializer.errors)   
            
            
-    def receive_payment_webhook(self, type, order_gateway_id):
+    def receive_payment_webhook(self, data):
+        
+        type = data["type"]
         match type:
             case "charge.succeeded":
+                order_gateway_id = data["transaction"]["order_id"]
                 result = self.webhook_payment_handler.handle_charge_succeeded(
                     order_gateway_id,
                     self.payment_order_service,
                 )
+                self.webhook_service.receive_message(data)
                 
                 return result
             case "charge.cancelled":
+                order_gateway_id = data["transaction"]["order_id"]
                 result = self.webhook_payment_handler.handle_charge_cancelled(
                     order_gateway_id, 
                     self.payment_order_service
                 )
+                self.webhook_service.receive_message(data)
                 
                 return result
             case "charge.failed":
+                order_gateway_id = data["transaction"]["order_id"]
                 result = self.webhook_payment_handler.handle_charge_failed(
                     order_gateway_id,
                     self.payment_order_service
                 )
-                
+                self.webhook_service.receive_message(data)
+                return result
+            case "verification":
+                result = self.webhook_service.receive_message(data)
                 return result
                 
 
