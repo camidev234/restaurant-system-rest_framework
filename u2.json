@@ -1,0 +1,9 @@
+curl 'https://minquick.smartquick.dev/api/gateway/' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYxMzQ4MDYzLCJqdGkiOiI4ZDRjNzNmM2FjNTQ0YmE0YTMyODc3NjE2M2I3OWRiNiIsInVzZXJfaWQiOjd9.qJB33TOc_WNbrx10tWxoqBj7hw-l6oWfaXK-9ewvQwc' \
+  -H 'Referer: https://app.quick.com.co/' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36' \
+  -H 'sec-ch-ua: "Not)A;Brand";v="8", "Chromium";v="138", "Google Chrome";v="138"' \
+  -H 'Content-Type: application/json' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  --data-raw '{"crear_tercero":{"conductor":true,"tenedor":true,"propietario":true,"numnitempresatransporte":"8301247785","codtipoidtercero":"C","numidtercero":"1005995931","nomidtercero":"JAIME ANDRES","primerapellidoidtercero":"BEDOYA JARAMILLO","segundoapellidoidtercero":"","codsedetercero":"0","nomsedetercero":"GIRARDOTA","codmunicipiorndc":5308000,"nomenclaturadireccion":"CRA 18 9 21 APAR 203","latitud":6.377648864,"longitud":-75.44882653,"codcategorialicenciaconduccion":"c1","numlicenciaconduccion":"1005995931","numtelefonocontacto":"3128978000","fechavencimientolicencia":"2028-04-01","regimensimple":"no","company":{"nit":"8301247785","endpoint":"https://gateway.quick.com.co/api/go/ministry/create","name":"ondemand","auth_key":"WUp3THBQSVhqaFAzN1Z0VDpEQ3BIaW4wQkNpQlAwV1FD"},"additional_fields":{"email":"andresbedoya3014@gmail.com","gender":"M","birth_date":"1985-07-11","mobile_phone":"3128978322","emergency_contact_full_name":"CLAUDIA JARAMILLO","emergency_contact_nid":"3113319223","emergency_contact_address":"CRA 18 9 21 APAR 203","emergency_mobile_phone":"3113319","emergency_contact_mobile_phone":"3113319223"}}}'
